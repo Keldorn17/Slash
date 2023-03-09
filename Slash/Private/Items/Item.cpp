@@ -18,22 +18,6 @@ void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/* UWorld* World = GetWorld();
-	if (World)
-	{
-		FVector Location = GetActorLocation();
-		DrawDebugSphere(World, Location, 15.f, THIRTY, FColor::Red, false, 30.f);
-	} */
-
-	FVector Location = GetActorLocation();
-	FVector Forward = GetActorForwardVector();
-	// We don't need to use semicolon but because Visual Studio things we are not finished with the line it indents it and it can be annoying
-	DRAW_SPHERE_CUSTOM_COLOR(Location, FColor::Blue);
-	DRAW_VECTOR(Location, Location + Forward * 100.f);
-	FRotator Rotation = GetActorRotation();
-	DRAW_CROSSHAIRS(Location, Rotation);
-
-	
 }
 
 void AItem::Tick(float DeltaTime)
@@ -51,6 +35,15 @@ void AItem::Tick(float DeltaTime)
 		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Name);
 	} */
 
+	// MovementRate in units of cm/s
+	float MovementRate = 50.f;
+	float RotationRate = 45.f;
+	
+	// MovementRate * DeltaTime (cm/s) * (s/frame) = (cm/frame)
+	AddActorWorldOffset(FVector(MovementRate * DeltaTime, 0.f, 0.f));
+	AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));
+	DRAW_SPHERE_SINGLEFRAME(GetActorLocation());
+	DRAW_VECTOR_SINGLEFRAME(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100);
 
 }
 
