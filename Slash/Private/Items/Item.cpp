@@ -20,30 +20,30 @@ void AItem::BeginPlay()
 
 }
 
+float AItem::TransformedSin()
+{
+	return Amplitude * FMath::Sin(RunningTime * TimeConstant);
+}
+float AItem::TransformedCos()
+{
+	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
+}
+
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/* UE_LOG(LogTemp, Warning, TEXT("DeltaTime: %f"), DeltaTime);
+	RunningTime += DeltaTime;
 
-	if (GEngine)
-	{
-		FString Name = GetName();
-		FString Message = FString::Printf(TEXT("Item Name: %s"), *Name);
-		GEngine->AddOnScreenDebugMessage(2, 60.f, FColor::Cyan, Message);
+	// float DeltaZ = Amplitude * FMath::Sin(RunningTime * TimeConstant);
 
-		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Name);
-	} */
-
-	// MovementRate in units of cm/s
-	float MovementRate = 50.f;
-	float RotationRate = 45.f;
+	// AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
 	
-	// MovementRate * DeltaTime (cm/s) * (s/frame) = (cm/frame)
-	AddActorWorldOffset(FVector(MovementRate * DeltaTime, 0.f, 0.f));
-	AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));
 	DRAW_SPHERE_SINGLEFRAME(GetActorLocation());
 	DRAW_VECTOR_SINGLEFRAME(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100);
+
+	FVector AvgVector = Avg<FVector>(GetActorLocation(), FVector::ZeroVector);
+	DRAW_POINT_SINGLEFRAME(AvgVector);
 
 }
 
