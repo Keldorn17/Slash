@@ -4,6 +4,11 @@
 #include "Pawns/Bird.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 ABird::ABird()
 {
@@ -17,6 +22,13 @@ ABird::ABird()
 	BirdMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BirdMesh"));
 	BirdMesh->SetupAttachment(GetRootComponent());
 
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(GetRootComponent());
+	SpringArm->TargetArmLength = 100.f;
+
+	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
+	ViewCamera->SetupAttachment(SpringArm);
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 }
@@ -24,12 +36,57 @@ ABird::ABird()
 void ABird::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(BirdMappingContext, 0);
+		}
+	}
 	
 }
 
 void ABird::MoveForward(float Value)
 {
-	
+	if (Controller && (Value != 0.f))
+	{
+		FVector Forward = GetActorForwardVector();
+		AddMovementInput(Forward, Value);
+	}
+}
+
+void ABird::Turn(float Value)
+{
+	AddControllerYawInput(Value);
+}
+
+void ABird::LookUp(float Value)
+{
+	AddControllerPitchInput(Value);
+}
+
+void ABird::Move(const FInputActionValue& Value)
+{
+	const FVector2D DirectionValue = Value.Get<FVector2D>();
+	if (Controller && (DirectionValue != FVector2D(0.f,0.f)))
+	{
+		FVector Forward = GetActorForwardVector();
+		AddMovementInput(Forward, DirectionValue.Y);
+		FVector Right = GetActorRightVector();
+		AddMovementInput(Right, DirectionValue.X);
+	}
+}
+
+void ABird::Look(const FInputActionValue& Value)
+{
+	const FVector2D LookAxisValue = Value.Get<FVector2D>();
+	if (GetController())
+	{
+		AddControllerYawInput(LookAxisValue.X);
+		AddControllerPitchInput(LookAxisValue.Y);
+	}
+
 }
 
 void ABird::Tick(float DeltaTime)
@@ -43,6 +100,15 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ABird::MoveForward);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABird::Look);
+	}
+
+	//Axis mapping solution
+	//PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ABird::MoveForward);
+	//PlayerInputComponent->BindAxis(FName("Turn"), this, &ABird::Turn);
+	//PlayerInputComponent->BindAxis(FName("LookUp"), this, &ABird::LookUp);
 }
 
