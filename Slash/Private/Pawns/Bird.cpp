@@ -47,25 +47,6 @@ void ABird::BeginPlay()
 	
 }
 
-void ABird::MoveForward(float Value)
-{
-	if (Controller && (Value != 0.f))
-	{
-		FVector Forward = GetActorForwardVector();
-		AddMovementInput(Forward, Value);
-	}
-}
-
-void ABird::Turn(float Value)
-{
-	AddControllerYawInput(Value);
-}
-
-void ABird::LookUp(float Value)
-{
-	AddControllerPitchInput(Value);
-}
-
 void ABird::Move(const FInputActionValue& Value)
 {
 	const FVector2D DirectionValue = Value.Get<FVector2D>();
@@ -105,10 +86,5 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABird::Look);
 	}
-
-	//Axis mapping solution
-	//PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ABird::MoveForward);
-	//PlayerInputComponent->BindAxis(FName("Turn"), this, &ABird::Turn);
-	//PlayerInputComponent->BindAxis(FName("LookUp"), this, &ABird::LookUp);
 }
 
