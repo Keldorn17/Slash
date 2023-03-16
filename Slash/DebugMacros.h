@@ -18,4 +18,4 @@
 		DrawDebugPoint(GetWorld(), EndLocation, 15.f, FColor::Red, false, -1.f); \
 	}
 // If we use back slash we can tell to the compiler that we use multiple line of definition 
-// It is important that after back slash even white charachers are not allowed
+// It is important that after back slash even white characters are not allowed
