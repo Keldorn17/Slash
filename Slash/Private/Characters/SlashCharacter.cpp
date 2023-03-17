@@ -7,6 +7,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GroomComponent.h"
 
+#include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+
 ASlashCharacter::ASlashCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,42 +41,36 @@ ASlashCharacter::ASlashCharacter()
 void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(SlashContext, 0);
+		}
+	}
 	
 }
 
-void ASlashCharacter::MoveForward(float Value)
+void ASlashCharacter::Move(const FInputActionValue& Value)
 {
-	if (Controller && (Value != 0.f))
-	{
-		// find out which way is forward
-		const FRotator ControlRotation = GetControlRotation();
-		const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+	const FVector2D MovementVector = Value.Get<FVector2D>();
 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
-	}
-}
-void ASlashCharacter::MoveRight(float Value)
-{
-	if (Controller && (Value != 0.f))
-	{
-		// find out which way is right
-		const FRotator ControlRotation = GetControlRotation();
-		const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(Direction, Value);
-	}
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	AddMovementInput(ForwardDirection, MovementVector.Y);
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(RightDirection, MovementVector.X);
 }
 
-void ASlashCharacter::Turn(float Value)
+void ASlashCharacter::Look(const FInputActionValue& Value)
 {
-	AddControllerYawInput(Value);
-}
+	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-void ASlashCharacter::LookUp(float Value)
-{
-	AddControllerPitchInput(Value);
+	AddControllerPitchInput(LookAxisVector.Y);
+	AddControllerYawInput(LookAxisVector.X);
 }
 
 void ASlashCharacter::Tick(float DeltaTime)
@@ -85,10 +83,12 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ASlashCharacter::MoveForward);
-	PlayerInputComponent->BindAxis(FName("MoveRight"), this, &ASlashCharacter::MoveRight);
-	PlayerInputComponent->BindAxis(FName("Turn"), this, &ASlashCharacter::Turn);
-	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ASlashCharacter::LookUp);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Look);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	}
 
 	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
 }
