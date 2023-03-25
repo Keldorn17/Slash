@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "CharacterTypes.h"
 #include "SlashCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
+class AItems;
+class UAnimMontage;
 class UInputMappingContext;
 class UInputAction;
 
@@ -26,6 +29,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void EKeyPressed();
+	void Attack();
+
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* SlashContext;
 
@@ -38,10 +44,31 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* JumpAction;
 
+	/**
+	* Callbacks for inputs
+	*/
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
+	/**
+	* Play montage functions
+	*/
+
+	void PlayAttackMontage();
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+	bool CanAttack();
+
 private:
+
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
+
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
@@ -53,4 +80,18 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Hair)
 	UGroomComponent* Eyebrows;
+	
+	UPROPERTY(VisibleInstanceOnly)
+	AItems *OverlappingItem;
+
+	/**
+	* Animation montages
+	*/
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
+
+public:
+	FORCEINLINE void SetOverlappingItem(AItems* Item) { OverlappingItem = Item; }
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 };
