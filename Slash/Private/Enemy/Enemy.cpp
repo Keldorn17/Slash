@@ -49,8 +49,12 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
-	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange)
+	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
+	DirectionalHitReact(ImpactPoint);
+}
 
+void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
+{
 	const FVector Forward = GetActorForwardVector();
 	// Lower Impact Point to the Enemy's Actor Location Z
 	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
@@ -70,7 +74,7 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	if (CrossProduct.Z < 0)
 	{
 		Theta *= -1.f;
-		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Red, 5.f);
+		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 	}
 
 	FName Section("FromBack");
