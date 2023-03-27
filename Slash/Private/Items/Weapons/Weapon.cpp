@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "Interfaces/HitInterface.h"
 
+// Constructor
 AWeapon::AWeapon()
 {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
@@ -25,12 +26,17 @@ AWeapon::AWeapon()
 
 }
 
+// Begin Play
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
 	WeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxOverlap);
 }
+
+/**
+* Equip
+*/
 
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
@@ -50,11 +56,19 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 	}
 }
 
+/**
+* Attachment To Socket
+*/
+
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
 }
+
+/**
+* Overlap Events
+*/
 
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -89,7 +103,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		ETraceTypeQuery::TraceTypeQuery1,
 		false,
 		ActorsToIgonre,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		BoxHit,
 		true
 	);
