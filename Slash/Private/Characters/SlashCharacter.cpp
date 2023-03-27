@@ -15,6 +15,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+//Constructor
 ASlashCharacter::ASlashCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +43,7 @@ ASlashCharacter::ASlashCharacter()
 	Eyebrows->AttachmentName = FString("head");
 }
 
+// Begin Play
 void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -55,6 +57,10 @@ void ASlashCharacter::BeginPlay()
 	}
 	
 }
+
+/**
+* Weapon Key Action
+*/
 
 void ASlashCharacter::EKeyPressed()
 {
@@ -82,6 +88,10 @@ void ASlashCharacter::EKeyPressed()
 		}
 	}
 }
+
+/**
+* Weapon Enum Condition
+*/
 
 void ASlashCharacter::Attack()
 {
@@ -116,6 +126,15 @@ bool ASlashCharacter::CanArm()
 		EquippedWeapon;
 }
 
+void ASlashCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+/**
+* Weapon Attachment
+*/
+
 void ASlashCharacter::Disarm()
 {
 	if (EquippedWeapon)
@@ -132,10 +151,9 @@ void ASlashCharacter::Arm()
 	}
 }
 
-void ASlashCharacter::FinishEquipping()
-{
-	ActionState = EActionState::EAS_Unoccupied;
-}
+/**
+* Montage Functions
+*/
 
 void ASlashCharacter::PlayAttackMontage()
 {
@@ -160,7 +178,7 @@ void ASlashCharacter::PlayAttackMontage()
 	}
 }
 
-void ASlashCharacter::PlayEquipMontage(FName SectionName)
+void ASlashCharacter::PlayEquipMontage(const FName SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && EquipMontage)
@@ -169,6 +187,10 @@ void ASlashCharacter::PlayEquipMontage(FName SectionName)
 		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
 	}
 }
+
+/**
+* Movement Key Actions
+*/
 
 void ASlashCharacter::Move(const FInputActionValue& Value)
 {
@@ -192,12 +214,14 @@ void ASlashCharacter::Look(const FInputActionValue& Value)
 	AddControllerYawInput(LookAxisVector.X);
 }
 
+// Tick
 void ASlashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
+// Setup Input Component
 void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -214,6 +238,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
+// CollisionEnabled
 void ASlashCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
 {
 	if (EquippedWeapon && EquippedWeapon->GetWeaponBox())
