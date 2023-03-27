@@ -12,6 +12,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
 class AItems;
+class AWeapon;
 class UAnimMontage;
 class UInputMappingContext;
 class UInputAction;
@@ -25,6 +26,10 @@ public:
 	ASlashCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -62,6 +67,19 @@ protected:
 	void AttackEnd();
 	bool CanAttack();
 
+	void PlayEquipMontage(FName SectionName);
+	bool CanDisarm();
+	bool CanArm();
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
 private:
 
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
@@ -84,12 +102,18 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItems *OverlappingItem;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
+
 	/**
 	* Animation montages
 	*/
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItems* Item) { OverlappingItem = Item; }
