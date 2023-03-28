@@ -57,9 +57,9 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 * Hit Functions
 */
 
-void AEnemy::GetHit(const FVector& ImpactPoint)
+void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
+	//DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
 	DirectionalHitReact(ImpactPoint);
 	
 	if (HitSound)
