@@ -8,6 +8,7 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class UAttributeComponent;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter, public IHitInterface
@@ -32,6 +33,9 @@ protected:
 	void PlayHitReactMontage(const FName SectionName);
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
+
 	/**
 	* Animation montages
 	*/
@@ -45,6 +49,4 @@ private:
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem* HitParticles;
 
-public:	
-	
 };
