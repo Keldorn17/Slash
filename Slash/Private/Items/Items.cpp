@@ -69,7 +69,7 @@ void AItems::Tick(float DeltaTime)
 
 	if (ItemState == EItemState::EIS_Hovering)
 	{
-		AddActorWorldOffset(FVector(0.f, TransformedCos(), TransformedSin()));
+		AddActorWorldOffset(FVector(0.f, 0.f, TransformedSin()));
 		RotateObject();
 	}
 	

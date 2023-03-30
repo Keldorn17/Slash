@@ -64,11 +64,19 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 	
 	if (HitSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
+		UGameplayStatics::PlaySoundAtLocation(
+			this, 
+			HitSound, 
+			ImpactPoint
+		);
 	}
 	if (HitParticles)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticles, ImpactPoint);
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+		);
 	}
 }
 
