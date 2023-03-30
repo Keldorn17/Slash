@@ -51,8 +51,6 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 			const int32 Selection = FMath::RandRange(0, TreasureClasses.Num() - 1);
 
 			World->SpawnActor<ATreasure>(TreasureClasses[Selection], Location, GetActorRotation());
-
-			Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		}
 	}
 }
