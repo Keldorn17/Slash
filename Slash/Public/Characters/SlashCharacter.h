@@ -34,6 +34,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	// Input Functions and Variables
 	void EKeyPressed();
 	void Attack();
 
@@ -49,17 +50,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* JumpAction;
 
-	/**
-	* Callbacks for inputs
-	*/
-
+	// Enhanced Input
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
-	/**
-	* Play montage functions
-	*/
-
+	// Play montage functions
 	void PlayAttackMontage();
 
 	UFUNCTION(BlueprintCallable)
@@ -80,7 +75,7 @@ protected:
 	void FinishEquipping();
 
 private:
-
+	// Default Character Variables
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -104,10 +99,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
 
-	/**
-	* Animation montages
-	*/
-
+	// Animation montages
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
 

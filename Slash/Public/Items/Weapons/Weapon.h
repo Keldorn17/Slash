@@ -41,14 +41,14 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	UBoxComponent* WeaponBox;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float Damage = 20.f;
+
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceStart;
 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
-
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
-	float Damage = 20.f;
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
