@@ -19,6 +19,6 @@ public:
 
 private:
 	UPROPERTY()
-	class UHealthBar* HealthBarWidget;
+	TObjectPtr<class UHealthBar> HealthBarWidget;
 	
 };

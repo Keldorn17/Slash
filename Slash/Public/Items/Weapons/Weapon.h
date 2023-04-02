@@ -36,19 +36,19 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
-	USoundBase* EquipSound;
+	TObjectPtr<USoundBase> EquipSound;
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
-	UBoxComponent* WeaponBox;
+	TObjectPtr<UBoxComponent> WeaponBox;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float Damage = 20.f;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* BoxTraceStart;
+	TObjectPtr<USceneComponent> BoxTraceStart;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* BoxTraceEnd;
+	TObjectPtr<USceneComponent> BoxTraceEnd;
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }

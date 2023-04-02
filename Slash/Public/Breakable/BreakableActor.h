@@ -24,10 +24,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UGeometryCollectionComponent* GeometryCollection;
+	TObjectPtr<UGeometryCollectionComponent> GeometryCollection;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UCapsuleComponent* Capsule;
+	TObjectPtr<class UCapsuleComponent> Capsule;
 
 private:
 	

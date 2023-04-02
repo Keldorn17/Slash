@@ -46,42 +46,42 @@ protected:
 private:
 	// Widget
 	UPROPERTY(VisibleAnywhere)
-	UAttributeComponent* Attributes;
+	TObjectPtr<UAttributeComponent> Attributes;
 
 	UPROPERTY(VisibleAnywhere)
-	UHealthBarComponent* HealthBarWidget;
+	TObjectPtr<UHealthBarComponent> HealthBarWidget;
 
 	// Sound and Effects
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* HitSound;
+	TObjectPtr<USoundBase> HitSound;
 
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem* HitParticles;
+	TObjectPtr<UParticleSystem> HitParticles;
 
 	// Animation montages
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HitReactMontage;
+	TObjectPtr<UAnimMontage> HitReactMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* DeathMontage;
+	TObjectPtr<UAnimMontage> DeathMontage;
 
 	/**
 	* Navigation
 	*/
 
 	UPROPERTY()
-	class AAIController* EnemyController;
+	TObjectPtr<class AAIController> EnemyController;
 
 	// Target
 	UPROPERTY()
-	AActor* CombatTarget;
+	TObjectPtr<AActor> CombatTarget;
 
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 500.f;
 
 	// Current patrol target
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
-	AActor* PatrolTarget;
+	TObjectPtr<AActor> PatrolTarget;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;

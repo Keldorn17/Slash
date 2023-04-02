@@ -16,5 +16,5 @@ class SLASH_API UHealthBar : public UUserWidget
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	class UProgressBar* HealthBar;
+	TObjectPtr<class UProgressBar> HealthBar;
 };
