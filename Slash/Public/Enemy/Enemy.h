@@ -3,18 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "Interfaces/HitInterface.h"
+#include "Characters/BaseCharacter.h"
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
-class UAnimMontage;
-class UAttributeComponent;
 class UHealthBarComponent;
 class UPawnSensingComponent;
 
 UCLASS()
-class SLASH_API AEnemy : public ACharacter, public IHitInterface
+class SLASH_API AEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -24,8 +21,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-	
-	void DirectionalHitReact(const FVector& ImpactPoint);
+	virtual void Destroyed() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,8 +37,8 @@ protected:
 	void PawnSeen(APawn* SeenPawn);
 
 	// Play montage functions
-	void Die();
-	void PlayHitReactMontage(const FName SectionName);
+	virtual void Die() override;
+	
 
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
@@ -50,24 +46,10 @@ protected:
 private:
 	// Widget Componenets
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UAttributeComponent> Attributes;
-
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UHealthBarComponent> HealthBarWidget;
 
-	// Sound and Effects
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	TObjectPtr<USoundBase> HitSound;
-
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	TObjectPtr<UParticleSystem> HitParticles;
-
-	// Animation montages
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> DeathMontage;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AWeapon> WeaponClass;
 
 	/**
 	* Navigation

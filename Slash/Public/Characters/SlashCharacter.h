@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "InputActionValue.h"
 #include "CharacterTypes.h"
 #include "SlashCharacter.generated.h"
@@ -12,13 +12,12 @@ class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
 class AItems;
-class AWeapon;
 class UAnimMontage;
 class UInputMappingContext;
 class UInputAction;
 
 UCLASS()
-class SLASH_API ASlashCharacter : public ACharacter
+class SLASH_API ASlashCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -27,16 +26,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
-
 
 protected:
 	virtual void BeginPlay() override;
 
 	// Input Functions and Variables
 	void EKeyPressed();
-	void Attack();
+	virtual void Attack() override;
+
+	// Enhanced Input
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> SlashContext;
@@ -50,16 +50,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 
-	// Enhanced Input
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-
 	// Play montage functions
-	void PlayAttackMontage();
-
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
-	bool CanAttack();
+	virtual void PlayAttackMontage() override;
+	virtual void AttackEnd() override;
+	virtual bool CanAttack() override;
 
 	void PlayEquipMontage(const FName SectionName);
 	bool CanDisarm();
@@ -94,15 +88,9 @@ private:
 	TObjectPtr<UGroomComponent> Eyebrows;
 	
 	UPROPERTY(VisibleInstanceOnly)
-	AItems *OverlappingItem;
-
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	TObjectPtr<AWeapon> EquippedWeapon;
+	TObjectPtr<AItems> OverlappingItem;
 
 	// Animation montages
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> AttackMontage;
-
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	TObjectPtr<UAnimMontage> EquipMontage;
 
