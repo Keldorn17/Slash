@@ -11,6 +11,7 @@
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
+class UPawnSensingComponent;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter, public IHitInterface
@@ -36,6 +37,9 @@ protected:
 	void CheckPatrolTarget();
 	void CheckCombatTarget();
 
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
+
 	// Play montage functions
 	void Die();
 	void PlayHitReactMontage(const FName SectionName);
@@ -44,7 +48,7 @@ protected:
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
-	// Widget
+	// Widget Componenets
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttributeComponent> Attributes;
 
@@ -79,6 +83,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 500.f;
 
+	UPROPERTY(EditAnywhere)
+	double AttackRadius = 150.f;
+
 	// Current patrol target
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TObjectPtr<AActor> PatrolTarget;
@@ -97,6 +104,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPawnSensingComponent> PawnSensing;
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
 	/**
 	* Navigation end
