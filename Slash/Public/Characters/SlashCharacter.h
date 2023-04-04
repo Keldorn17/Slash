@@ -23,14 +23,15 @@ class SLASH_API ASlashCharacter : public ABaseCharacter
 
 public:
 	ASlashCharacter();
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	/** <AActor> */
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	/** </AActor> */
 
 protected:
 	virtual void BeginPlay() override;
 
-	// Input Functions and Variables
+	/** Callbacks for input */
 	void EKeyPressed();
 	virtual void Attack() override;
 
@@ -50,30 +51,28 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 
-	// Play montage functions
+	/** Combat */
+	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
-
 	void PlayEquipMontage(const FName SectionName);
 	bool CanDisarm();
 	bool CanArm();
-
-	UFUNCTION(BlueprintCallable)
 	void Disarm();
+	void Arm();
 
 	UFUNCTION(BlueprintCallable)
-	void Arm();
+	void AttachWeaponToBack();
+
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToHand();
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
 
 private:
-	// Default Character Variables
-	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EActionState ActionState = EActionState::EAS_Unoccupied;
-
+	/** Character components */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArm;
 
@@ -89,9 +88,15 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TObjectPtr<AItems> OverlappingItem;
 
-	// Animation montages
+	/** Montage */
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	TObjectPtr<UAnimMontage> EquipMontage;
+
+	/** States */
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItems* Item) { OverlappingItem = Item; }

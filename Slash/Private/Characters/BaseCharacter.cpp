@@ -4,8 +4,8 @@
 #include "Characters/BaseCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Items/Weapons/Weapon.h"
 #include "Components/AttributeComponent.h"
+#include "Items/Weapons/Weapon.h"
 #include "Kismet/GameplayStatics.h"
 
 // Constructor
@@ -14,6 +14,7 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 }
 
 // Begin Play
