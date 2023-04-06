@@ -25,7 +25,7 @@ public:
 	/** </AActor> */
 
 	/** <IHitInterface> */
-	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	/** </IHitInterface> */
 
 protected:
@@ -42,12 +42,14 @@ protected:
 	virtual int32 PlayDeathMontage() override;
 	/** </ABaseCharacter> */
 
+	UPROPERTY(BlueprintReadOnly, Category = Combat)
+	TObjectPtr<AActor> CombatTarget;
+
 	UPROPERTY(BlueprintReadOnly)
 	TEnumAsByte<EDeathPose> DeathPose = EDeathPose::EDP_Death1;
 
 	UPROPERTY(BlueprintReadOnly)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
-
 private:
 	/** AI Behavior */
 	void SpawnDefaultWeapon();
@@ -86,9 +88,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPawnSensingComponent> PawnSensing;
 
-	UPROPERTY()
-	TObjectPtr<AActor> CombatTarget;
-
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 1000.f;
 
@@ -110,10 +109,10 @@ private:
 	FTimerHandle PatrolTimer;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float PatrolWaitMin = 5.f;
+	float PatrolWaitMin = 2.f;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float PatrolWaitMax = 10.f;
+	float PatrolWaitMax = 5.f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float PatrolingSpeed = 125.f;

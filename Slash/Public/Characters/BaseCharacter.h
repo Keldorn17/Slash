@@ -26,6 +26,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	/** <IHitInterface> */
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
+	/** </IHitInterface> */
+
 	/** <Combat> */
 	virtual void Attack();
 	virtual void Die();
@@ -48,6 +52,7 @@ protected:
 	void PlayHitReactMontage(const FName SectionName);
 	virtual int32 PlayAttackMontage();
 	virtual int32 PlayDeathMontage();
+	void StopAttackMontage();
 	/** </Montage> */
 	
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
@@ -63,19 +68,19 @@ private:
 	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames);
 	/** </Montage> */
 
-	UPROPERTY(EditAnywhere, Category = Sounds)
+	UPROPERTY(EditAnywhere, Category = Combat)
 	TObjectPtr<USoundBase> HitSound;
 
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UPROPERTY(EditAnywhere, Category = Combat)
 	TObjectPtr<UParticleSystem> HitParticles;
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UPROPERTY(EditDefaultsOnly, Category = Combat)
 	TObjectPtr<UAnimMontage> AttackMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UPROPERTY(EditDefaultsOnly, Category = Combat)
 	TObjectPtr<UAnimMontage> HitReactMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UPROPERTY(EditDefaultsOnly, Category = Combat)
 	TObjectPtr<UAnimMontage> DeathMontage;
 
 	UPROPERTY(EditAnywhere, Category = Combat)

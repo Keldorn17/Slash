@@ -28,6 +28,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	/** </AActor> */
 
+	/** <IHitInterface> */
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
+	/** </IHitInterface> */
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -69,6 +73,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
+
+	UFUNCTION(BlueprintCallable)
+	void HitReactEnd();
 
 private:
 

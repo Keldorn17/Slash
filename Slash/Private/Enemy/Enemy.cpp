@@ -40,6 +40,7 @@ void AEnemy::BeginPlay()
 
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
 	InitializeEnemy();
+	Tags.Add(FName("Enemy"));
 }
 
 // Tick
@@ -137,7 +138,7 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 		EnemyState != EEnemyState::EES_Dead &&
 		EnemyState != EEnemyState::EES_Chasing &&
 		EnemyState < EEnemyState::EES_Attacking &&
-		SeenPawn->ActorHasTag(FName("SlashCharacter"));
+		SeenPawn->ActorHasTag(FName("EngageableTarget"));
 
 	if (bShouldChaseTarget)
 	{
@@ -179,6 +180,7 @@ void AEnemy::Die()
 	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 int32 AEnemy::PlayDeathMontage()
@@ -196,13 +198,14 @@ int32 AEnemy::PlayDeathMontage()
 * Hit Functions
 */
 
-void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
+void AEnemy::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
-	ShowHealthBar();
-	if (IsAlive()) DirectionalHitReact(ImpactPoint);
-	else Die();
-	PlayHitSound(ImpactPoint);
-	SpawnHitParticles(ImpactPoint);
+	Super::GetHit_Implementation(ImpactPoint, Hitter);
+	if (!IsDead()) ShowHealthBar();
+	ClearPatrolTimer();
+	ClearAttackTimer();
+	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+	StopAttackMontage();
 }
 
 // Weapon Destroy when the enemy destroyed
@@ -222,7 +225,14 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 {
 	HandleDamage(DamageAmount);
 	CombatTarget = EventInstigator->GetPawn();
-	ChaseTarget();
+	if (IsInsideAttackRadius())
+	{
+		EnemyState = EEnemyState::EES_Attacking;
+	}
+	else if (IsOutsideAttackRadius())
+	{
+		ChaseTarget();
+	}
 	return DamageAmount;
 }
 

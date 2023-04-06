@@ -85,6 +85,15 @@ void ABaseCharacter::PlayHitReactMontage(const FName SectionName)
 	}
 }
 
+void ABaseCharacter::StopAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Stop(0.25f, AttackMontage);
+	}
+}
+
 /**
 * Sound and Effects
 **/
@@ -116,6 +125,14 @@ void ABaseCharacter::SpawnHitParticles(const FVector& ImpactPoint)
 /**
 * Hit
 **/
+
+void ABaseCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
+{
+	if (IsAlive() && Hitter) DirectionalHitReact(Hitter->GetActorLocation());
+	else Die();
+	PlayHitSound(ImpactPoint);
+	SpawnHitParticles(ImpactPoint);
+}
 
 void ABaseCharacter::DirectionalHitReact(const FVector& ImpactPoint)
 {
