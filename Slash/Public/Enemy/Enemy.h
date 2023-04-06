@@ -42,9 +42,6 @@ protected:
 	virtual int32 PlayDeathMontage() override;
 	/** </ABaseCharacter> */
 
-	UPROPERTY(BlueprintReadOnly, Category = Combat)
-	TObjectPtr<AActor> CombatTarget;
-
 	UPROPERTY(BlueprintReadOnly)
 	TEnumAsByte<EDeathPose> DeathPose = EDeathPose::EDP_Death1;
 
@@ -109,10 +106,10 @@ private:
 	FTimerHandle PatrolTimer;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float PatrolWaitMin = 2.f;
+	float PatrolWaitMin = .1f;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float PatrolWaitMax = 5.f;
+	float PatrolWaitMax = .2f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float PatrolingSpeed = 125.f;
