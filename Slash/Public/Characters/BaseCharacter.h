@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"
+#include "Characters/CharacterTypes.h"
 #include "BaseCharacter.generated.h"
 
 class UAnimMontage;
@@ -40,6 +41,8 @@ protected:
 	void DisableCapsule();
 	bool IsAlive();
 	virtual bool CanAttack();
+	void DisableMeshCollision();
+	bool HasDeadTag();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
@@ -73,6 +76,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double WarpTargetDistance = 75.f;
 
+	UPROPERTY(BlueprintReadOnly)
+	TEnumAsByte<EDeathPose> DeathPose;
+
 private:
 
 	/** <Montage> */
@@ -101,4 +107,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TArray<FName> DeathMontageSections;
 
+public:
+	FORCEINLINE TEnumAsByte<EDeathPose> GetDeathPose() const { return DeathPose; }
 };

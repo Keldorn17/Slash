@@ -39,11 +39,7 @@ protected:
 	virtual bool CanAttack() override;
 	virtual void AttackEnd() override;
 	virtual void HandleDamage(float DamageAmount) override;
-	virtual int32 PlayDeathMontage() override;
 	/** </ABaseCharacter> */
-
-	UPROPERTY(BlueprintReadOnly)
-	TEnumAsByte<EDeathPose> DeathPose = EDeathPose::EDP_Death1;
 
 	UPROPERTY(BlueprintReadOnly)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
@@ -106,10 +102,10 @@ private:
 	FTimerHandle PatrolTimer;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float PatrolWaitMin = .1f;
+	float PatrolWaitMin = 5.f;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float PatrolWaitMax = .2f;
+	float PatrolWaitMax = 10.f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float PatrolingSpeed = 125.f;
@@ -117,10 +113,10 @@ private:
 	FTimerHandle AttackTimer;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
-	float AttackMin = .5f;
+	float AttackMin = .3f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
-	float AttackMax = 1.f;
+	float AttackMax = .6f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float ChasingSpeed = 400.f;

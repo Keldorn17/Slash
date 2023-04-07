@@ -50,6 +50,7 @@ void AEnemy::Tick(float DeltaTime)
 	if (IsDead()) return;
 	if (EnemyState > EEnemyState::EES_Patrolling)
 	{
+		if (HasDeadTag()) return;
 		CheckCombatTarget();
 	}
 	else
@@ -134,6 +135,7 @@ AActor* AEnemy::ChoosePatrolTarget()
 
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
+	if (HasDeadTag()) return;
 	const bool bShouldChaseTarget =
 		EnemyState != EEnemyState::EES_Dead &&
 		EnemyState != EEnemyState::EES_Chasing &&
@@ -173,25 +175,14 @@ void AEnemy::InitializeEnemy()
 
 void AEnemy::Die()
 {
+	Super::Die();
 	EnemyState = EEnemyState::EES_Dead;
-	PlayDeathMontage();
 	ClearAttackTimer();
 	HideHealthBar();
 	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
-}
-
-int32 AEnemy::PlayDeathMontage()
-{	
-	const int32 Selection = Super::PlayDeathMontage();
-	TEnumAsByte<EDeathPose> Pose(Selection);
-	if (Pose < EDeathPose::EDP_MAX)
-	{
-		DeathPose = Pose;
-	}	
-	return Selection;
 }
 
 /**
@@ -314,8 +305,9 @@ void AEnemy::PatrolTimerFinished()
 // Attack
 void AEnemy::Attack()
 {
-	EnemyState = EEnemyState::EES_Engaged;
 	Super::Attack();
+	if (CombatTarget == nullptr) return;
+	EnemyState = EEnemyState::EES_Engaged;
 	PlayAttackMontage();
 }
 

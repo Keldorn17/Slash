@@ -157,7 +157,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		if (ActorIsSameType(BoxHit.GetActor())) return;
 		UGameplayStatics::ApplyDamage(BoxHit.GetActor(), Damage, GetInstigator()->GetController(), this, UDamageType::StaticClass());
 		ExecuteGetHit(BoxHit);
-		if (IsPlayer()) CreateFields(BoxHit.ImpactPoint);
+		CreateFields(BoxHit.ImpactPoint);
 	}
 }
 

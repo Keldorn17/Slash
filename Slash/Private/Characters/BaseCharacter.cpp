@@ -7,6 +7,7 @@
 #include "Components/AttributeComponent.h"
 #include "Items/Weapons/Weapon.h"
 #include "Kismet/GameplayStatics.h"
+#include "Characters/CharacterTypes.h"
 
 // Constructor
 ABaseCharacter::ABaseCharacter()
@@ -71,7 +72,13 @@ int32 ABaseCharacter::PlayAttackMontage()
 
 int32 ABaseCharacter::PlayDeathMontage()
 {
-	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+	const int32 Selection = PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+	TEnumAsByte<EDeathPose> Pose(Selection);
+	if (Pose < EDeathPose::EDP_MAX)
+	{
+		DeathPose = Pose;
+	}
+	return Selection;
 }
 
 // Hit Montage
@@ -219,9 +226,17 @@ void ABaseCharacter::DisableCapsule()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void ABaseCharacter::DisableMeshCollision()
+{
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void ABaseCharacter::Attack()
 {
-
+	if (CombatTarget && CombatTarget->ActorHasTag(FName("Dead")))
+	{
+		CombatTarget = nullptr;
+	}
 }
 
 void ABaseCharacter::AttackEnd()
@@ -236,10 +251,21 @@ bool ABaseCharacter::CanAttack()
 
 void ABaseCharacter::Die()
 {
-
+	Tags.Add(FName("Dead"));
+	PlayDeathMontage();
 }
 
 bool ABaseCharacter::IsAlive()
 {
 	return Attributes && Attributes->IsAlive();
+}
+
+bool ABaseCharacter::HasDeadTag()
+{
+	if (CombatTarget && CombatTarget->ActorHasTag(FName("Dead")))
+	{
+		CombatTarget = nullptr;
+		return true;
+	}
+	return false;
 }
