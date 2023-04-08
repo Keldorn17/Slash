@@ -68,6 +68,7 @@ private:
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
+	void SpawnSoul();
 
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn); // Callback for OnPawnSeen in UPanSensingComponent
@@ -123,5 +124,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float DeathLifeSpan = 8.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TSubclassOf<class ASoul> SoulClass;
 
 };

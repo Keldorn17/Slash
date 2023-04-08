@@ -14,6 +14,7 @@ class UCameraComponent;
 class UGroomComponent;
 class AItems;
 class ASoul;
+class ATreasure;
 class UAnimMontage;
 class USlashOverlay;
 class UInputMappingContext;
@@ -29,6 +30,7 @@ public:
 
 	/** <AActor> */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	/** </AActor> */
 
@@ -43,6 +45,7 @@ public:
 	/** <IPickupInterface> */
 	virtual void SetOverlappingItem(class AItems* Item) override;
 	virtual void AddSouls(class ASoul* Soul) override;
+	virtual void AddGold(class ATreasure* Treasure) override;
 	/** </IPickupInterface> */
 
 protected:
@@ -51,6 +54,8 @@ protected:
 	/** Callbacks for input */
 	void EKeyPressed();
 	virtual void Attack() override;
+	virtual void DodgeEnd() override;
+	void Dodge();
 
 	// Enhanced Input
 	void Move(const FInputActionValue& Value);
@@ -92,8 +97,9 @@ protected:
 	void HitReactEnd();
 
 private:
-	/** Is Functions */
+	/** Helper Functions */
 	bool IsUnoccupied();
+	bool HasEnoughStamina();
 
 	/** HUD */
 	void InitializeSlashOverlay();

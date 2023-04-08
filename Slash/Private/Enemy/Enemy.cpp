@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
 #include "Items/Weapons/Weapon.h"
+#include "Items/Soul.h"
 
 // Constructor
 AEnemy::AEnemy()
@@ -169,6 +170,19 @@ void AEnemy::InitializeEnemy()
 	SpawnDefaultWeapon();
 }
 
+void AEnemy::SpawnSoul()
+{
+	UWorld* World = GetWorld();
+	if (World && SoulClass && Attributes)
+	{
+		ASoul* SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, GetActorLocation(), GetActorRotation());
+		if (SpawnedSoul)
+		{
+			SpawnedSoul->SetSouls(Attributes->GetSouls());
+		}
+	}
+}
+
 /**
 * Montage Player
 */
@@ -176,6 +190,7 @@ void AEnemy::InitializeEnemy()
 void AEnemy::Die()
 {
 	Super::Die();
+	SpawnSoul();
 	EnemyState = EEnemyState::EES_Dead;
 	ClearAttackTimer();
 	HideHealthBar();

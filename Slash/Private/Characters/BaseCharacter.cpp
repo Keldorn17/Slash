@@ -81,6 +81,11 @@ int32 ABaseCharacter::PlayDeathMontage()
 	return Selection;
 }
 
+void ABaseCharacter::PlayDodgeMontage()
+{
+	PlayMontageSection(DodgeMontage, FName("Default"));
+}
+
 // Hit Montage
 void ABaseCharacter::PlayHitReactMontage(const FName SectionName)
 {
@@ -229,6 +234,11 @@ void ABaseCharacter::DisableCapsule()
 void ABaseCharacter::DisableMeshCollision()
 {
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ABaseCharacter::DodgeEnd()
+{
+
 }
 
 void ABaseCharacter::Attack()
