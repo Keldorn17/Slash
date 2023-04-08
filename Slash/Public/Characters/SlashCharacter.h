@@ -54,7 +54,6 @@ protected:
 	/** Callbacks for input */
 	void EKeyPressed();
 	virtual void Attack() override;
-	virtual void DodgeEnd() override;
 	void Dodge();
 
 	// Enhanced Input
@@ -73,8 +72,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> EKeyAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> AttackAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> DodgeAction;
+
 	/** Combat */
 	void EquipWeapon(AWeapon* Weapon);
+	virtual void DodgeEnd() override;
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
 	void PlayEquipMontage(const FName SectionName);

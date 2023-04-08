@@ -190,11 +190,11 @@ void AEnemy::SpawnSoul()
 void AEnemy::Die()
 {
 	Super::Die();
+	DisableCapsule();
 	SpawnSoul();
 	EnemyState = EEnemyState::EES_Dead;
 	ClearAttackTimer();
 	HideHealthBar();
-	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
