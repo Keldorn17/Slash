@@ -121,6 +121,20 @@ void ASlashCharacter::SetHUDHealth()
 }
 
 /**
+* Pickup
+*/
+
+void ASlashCharacter::SetOverlappingItem(AItems* Item)
+{
+	OverlappingItem = Item;
+}
+
+void ASlashCharacter::AddSouls(ASoul* Soul)
+{
+
+}
+
+/**
 * Weapon Key Action
 */
 

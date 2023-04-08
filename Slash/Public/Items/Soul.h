@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Items/Items.h"
-#include "Treasure.generated.h"
+#include "Soul.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SLASH_API ATreasure : public AItems
+class SLASH_API ASoul : public AItems
 {
 	GENERATED_BODY()
 	
@@ -18,8 +18,4 @@ protected:
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 private:
-
-	UPROPERTY(EditAnywhere, Category = "Treasure Property")
-	int32 Gold;
-
 };
