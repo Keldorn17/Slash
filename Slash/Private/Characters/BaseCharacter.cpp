@@ -263,6 +263,8 @@ void ABaseCharacter::Die()
 {
 	Tags.Add(FName("Dead"));
 	PlayDeathMontage();
+	DisableCapsule();
+	DisableMeshCollision();
 }
 
 bool ABaseCharacter::IsAlive()

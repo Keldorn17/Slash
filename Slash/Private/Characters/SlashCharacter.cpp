@@ -75,7 +75,7 @@ void ASlashCharacter::BeginPlay()
 // Tick
 void ASlashCharacter::Tick(float DeltaTime)
 {
-	if (Attributes)
+	if (IsAlive() && Attributes)
 	{
 		if (Attributes->GetStaminaPercent() < 1.f && SlashOverlay)
 		{
@@ -221,7 +221,6 @@ void ASlashCharacter::Die()
 	Super::Die();
 
 	ActionState = EActionState::EAS_Dead;
-	DisableMeshCollision();
 }
 
 /**
