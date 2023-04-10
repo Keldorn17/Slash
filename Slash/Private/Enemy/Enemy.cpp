@@ -187,9 +187,9 @@ void AEnemy::SpawnSoul()
 * Montage Player
 */
 
-void AEnemy::Die()
+void AEnemy::Die_Implementation()
 {
-	Super::Die();
+	Super::Die_Implementation();
 	SpawnSoul();
 	EnemyState = EEnemyState::EES_Dead;
 	ClearAttackTimer();
