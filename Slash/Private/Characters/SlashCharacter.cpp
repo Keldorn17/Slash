@@ -15,6 +15,8 @@
 #include "Animation/AnimMontage.h"
 #include "HUD/SlashHUD.h"
 #include "HUD/SlashOverlay.h"
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
@@ -68,8 +70,7 @@ void ASlashCharacter::BeginPlay()
 	}
 
 	Tags.Add(FName("EngageableTarget"));
-	InitializeSlashOverlay();
-
+	ShowStartMenu();
 }
 
 // Tick
@@ -103,6 +104,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &ASlashCharacter::EKeyPressed);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Attack);
 		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Dodge);
+		EnhancedInputComponent->BindAction(MenuKeyAction, ETriggerEvent::Started, this, &ASlashCharacter::MenuKeyPressed);
 	}
 }
 
@@ -112,6 +114,8 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ASlashCharacter::InitializeSlashOverlay()
 {
+	bStartMenuClosed = true;
+
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
@@ -127,7 +131,29 @@ void ASlashCharacter::InitializeSlashOverlay()
 				SlashOverlay->SetSouls(0);
 			}
 		}
+	}
+}
 
+void ASlashCharacter::ShowStartMenu()
+{
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+		if (PlayerController && StartMenuWidgetClass)
+		{
+			if (!IsMenuOpen)
+			{
+				IsMenuOpen = true;
+				StartMenuWidget = CreateWidget<UUserWidget>(PlayerController, StartMenuWidgetClass);
+				StartMenuWidget->AddToViewport();
+				PlayerController->bShowMouseCursor = true;
+				UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, StartMenuWidget);
+				UGameplayStatics::SetGamePaused(World, true);
+			}
+		}
 	}
 }
 
@@ -139,30 +165,111 @@ void ASlashCharacter::SetHUDHealth()
 	}
 }
 
-/**
-* Pickup
-*/
-
-void ASlashCharacter::SetOverlappingItem(AItems* Item)
+/** Create Widget */
+void ASlashCharacter::CreateMenu(APlayerController* PlayerController)
 {
-	OverlappingItem = Item;
-}
-
-void ASlashCharacter::AddSouls(ASoul* Soul)
-{
-	if (Attributes && SlashOverlay)
+	UWorld* World = GetWorld();
+	if (World && PlayerController && MenuWidgetClass)
 	{
-		Attributes->AddSouls(Soul->GetSouls());
-		SlashOverlay->SetSouls(Attributes->GetSouls());
+		IsMenuOpen = true;
+		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
+		MenuWidget->AddToViewport();
+		PlayerController->bShowMouseCursor = true;
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, MenuWidget);
+		UGameplayStatics::SetGamePaused(World, true);
 	}
 }
 
-void ASlashCharacter::AddGold(ATreasure* Treasure)
+void ASlashCharacter::CreateControlls()
 {
-	if (Attributes && SlashOverlay)
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	if (PlayerController && MenuWidget && ControllsWidgetClass)
 	{
-		Attributes->AddGold(Treasure->GetGold());
-		SlashOverlay->SetGold(Attributes->GetGold());
+		ControllsWidget = CreateWidget<UUserWidget>(PlayerController, ControllsWidgetClass);
+		ControllsWidget->AddToViewport();
+		MenuWidget->RemoveFromParent();
+		bInControlls = true;
+	}
+}
+
+void ASlashCharacter::CreateSettings()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	if (PlayerController && MenuWidget && SettingsWidgetClass)
+	{
+		SettingsWidget = CreateWidget<UUserWidget>(PlayerController, SettingsWidgetClass);
+		SettingsWidget->AddToViewport();
+		MenuWidget->RemoveFromParent();
+		bInSettings = true;
+	}
+}
+
+/** Close Widget */
+void ASlashCharacter::CloseMenu(APlayerController* PlayerController)
+{
+	UWorld* World = GetWorld();
+	if (World && PlayerController)
+	{
+		IsMenuOpen = false;
+		MenuWidget->RemoveFromParent();
+		PlayerController->bShowMouseCursor = false;
+		UGameplayStatics::SetGamePaused(World, false);
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController);
+	}
+}
+
+void ASlashCharacter::CloseControlls()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController && ControllsWidget && MenuWidgetClass)
+	{
+		ControllsWidget->RemoveFromParent();
+		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
+		MenuWidget->AddToViewport();
+		bInControlls = false;
+	}
+}
+
+void ASlashCharacter::CloseSettings()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController && SettingsWidget && MenuWidgetClass)
+	{
+		SettingsWidget->RemoveFromParent();
+		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
+		MenuWidget->AddToViewport();
+		bInSettings = false;
+	}
+}
+
+/**
+* Menu Key Action
+*/
+
+void ASlashCharacter::MenuKeyPressed()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	if (PlayerController && bStartMenuClosed)
+	{
+		if (!IsMenuOpen)
+		{
+			CreateMenu(PlayerController);
+		}
+		else if (!bInSettings && !bInControlls)
+		{
+			CloseMenu(PlayerController);
+		}
+		else if (bInSettings)
+		{
+			CloseSettings();
+		}
+		else if (bInControlls)
+		{
+			CloseControlls();
+		}
 	}
 }
 
@@ -256,6 +363,33 @@ float ASlashCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	HandleDamage(DamageAmount);
 	SetHUDHealth();
 	return DamageAmount;
+}
+
+/**
+* Pickup
+*/
+
+void ASlashCharacter::SetOverlappingItem(AItems* Item)
+{
+	OverlappingItem = Item;
+}
+
+void ASlashCharacter::AddSouls(ASoul* Soul)
+{
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->AddSouls(Soul->GetSouls());
+		SlashOverlay->SetSouls(Attributes->GetSouls());
+	}
+}
+
+void ASlashCharacter::AddGold(ATreasure* Treasure)
+{
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->AddGold(Treasure->GetGold());
+		SlashOverlay->SetGold(Attributes->GetGold());
+	}
 }
 
 /**

@@ -59,6 +59,7 @@ protected:
 	// Enhanced Input
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void MenuKeyPressed();
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> SlashContext;
@@ -80,6 +81,64 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> DodgeAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> MenuKeyAction;
+
+	/** HUD */
+	UFUNCTION(BlueprintCallable)
+	void InitializeSlashOverlay();
+
+	void CreateMenu(APlayerController* PlayerController);
+	void CloseMenu(APlayerController* PlayerController);
+
+	UFUNCTION(BlueprintCallable)
+	void CreateControlls();
+
+	UFUNCTION(BlueprintCallable)
+	void CreateSettings();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseControlls();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseSettings();
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TSubclassOf<UUserWidget> MenuWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> MenuWidget;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TSubclassOf<UUserWidget> StartMenuWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> StartMenuWidget;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TSubclassOf<UUserWidget> SettingsWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> SettingsWidget;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TSubclassOf<UUserWidget> ControllsWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> ControllsWidget;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsMenuOpen = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bStartMenuClosed = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bInSettings = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bInControlls = false;
 
 	/** Combat */
 	void EquipWeapon(AWeapon* Weapon);
@@ -111,8 +170,8 @@ private:
 	bool HasEnoughStamina();
 
 	/** HUD */
-	void InitializeSlashOverlay();
 	void SetHUDHealth();
+	void ShowStartMenu();
 
 	/** Character components */
 	UPROPERTY(VisibleAnywhere)
