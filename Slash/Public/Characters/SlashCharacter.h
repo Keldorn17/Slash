@@ -89,8 +89,10 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void InitializeSlashOverlay();
 
-	void CreateMenu(APlayerController* PlayerController);
-	void CloseMenu(APlayerController* PlayerController);
+	void CreateMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseMenu();
 
 	UFUNCTION(BlueprintCallable)
 	void CreateControlls();

@@ -115,7 +115,6 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void ASlashCharacter::InitializeSlashOverlay()
 {
 	bStartMenuClosed = true;
-
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
@@ -137,12 +136,11 @@ void ASlashCharacter::InitializeSlashOverlay()
 void ASlashCharacter::ShowStartMenu()
 {
 	UWorld* World = GetWorld();
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	if (World)
 	{
-		APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-		if (PlayerController && StartMenuWidgetClass)
+		if (StartMenuWidgetClass && PlayerController)
 		{
 			if (!IsMenuOpen)
 			{
@@ -166,10 +164,12 @@ void ASlashCharacter::SetHUDHealth()
 }
 
 /** Create Widget */
-void ASlashCharacter::CreateMenu(APlayerController* PlayerController)
+void ASlashCharacter::CreateMenu()
 {
 	UWorld* World = GetWorld();
-	if (World && PlayerController && MenuWidgetClass)
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	if (World && MenuWidgetClass && PlayerController)
 	{
 		IsMenuOpen = true;
 		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
@@ -183,8 +183,7 @@ void ASlashCharacter::CreateMenu(APlayerController* PlayerController)
 void ASlashCharacter::CreateControlls()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-	if (PlayerController && MenuWidget && ControllsWidgetClass)
+	if (ControllsWidgetClass && PlayerController && MenuWidget)
 	{
 		ControllsWidget = CreateWidget<UUserWidget>(PlayerController, ControllsWidgetClass);
 		ControllsWidget->AddToViewport();
@@ -196,8 +195,7 @@ void ASlashCharacter::CreateControlls()
 void ASlashCharacter::CreateSettings()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-	if (PlayerController && MenuWidget && SettingsWidgetClass)
+	if (SettingsWidgetClass && PlayerController && MenuWidget)
 	{
 		SettingsWidget = CreateWidget<UUserWidget>(PlayerController, SettingsWidgetClass);
 		SettingsWidget->AddToViewport();
@@ -207,10 +205,11 @@ void ASlashCharacter::CreateSettings()
 }
 
 /** Close Widget */
-void ASlashCharacter::CloseMenu(APlayerController* PlayerController)
+void ASlashCharacter::CloseMenu()
 {
 	UWorld* World = GetWorld();
-	if (World && PlayerController)
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (World && MenuWidget && PlayerController)
 	{
 		IsMenuOpen = false;
 		MenuWidget->RemoveFromParent();
@@ -223,7 +222,7 @@ void ASlashCharacter::CloseMenu(APlayerController* PlayerController)
 void ASlashCharacter::CloseControlls()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController && ControllsWidget && MenuWidgetClass)
+	if (PlayerController && MenuWidgetClass && ControllsWidget)
 	{
 		ControllsWidget->RemoveFromParent();
 		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
@@ -235,7 +234,7 @@ void ASlashCharacter::CloseControlls()
 void ASlashCharacter::CloseSettings()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController && SettingsWidget && MenuWidgetClass)
+	if (PlayerController && MenuWidgetClass && SettingsWidget)
 	{
 		SettingsWidget->RemoveFromParent();
 		MenuWidget = CreateWidget<UUserWidget>(PlayerController, MenuWidgetClass);
@@ -251,16 +250,15 @@ void ASlashCharacter::CloseSettings()
 void ASlashCharacter::MenuKeyPressed()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
 	if (PlayerController && bStartMenuClosed)
 	{
 		if (!IsMenuOpen)
 		{
-			CreateMenu(PlayerController);
+			CreateMenu();
 		}
 		else if (!bInSettings && !bInControlls)
 		{
-			CloseMenu(PlayerController);
+			CloseMenu();
 		}
 		else if (bInSettings)
 		{
