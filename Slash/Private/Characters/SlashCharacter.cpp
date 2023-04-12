@@ -542,15 +542,15 @@ void ASlashCharacter::Respawn()
 {
 	Tags.Remove(FName("Dead"));
 	ActionState = EActionState::EAS_Unoccupied;
-
 	EnableCapsule();
-	EnableMeshCollision();	
+	EnableMeshCollision();
 	SetActorTransform(SpawnTransform);
 	GetWorldTimerManager().ClearTimer(RespawnTimer);
-	
+
 	if (Attributes && SlashOverlay)
 	{
 		Attributes->SetHealth(Attributes->GetMaxHealth());
 		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+	}
 	}
 }

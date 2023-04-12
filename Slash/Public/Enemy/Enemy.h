@@ -43,6 +43,14 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
+	/** Respawn */
+	void Respawn();
+	FTransform SpawnTransform;
+	FTimerHandle RespawnTimer;
+
+	UPROPERTY(EditAnywhere, Category = Respawn)
+	float RespawnTime = 180.f;
 private:
 	/** AI Behavior */
 	void SpawnDefaultWeapon();

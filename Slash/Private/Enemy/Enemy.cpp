@@ -42,6 +42,7 @@ void AEnemy::BeginPlay()
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
 	InitializeEnemy();
 	Tags.Add(FName("Enemy"));
+	SpawnTransform = GetActorTransform();
 }
 
 // Tick
@@ -199,6 +200,22 @@ void AEnemy::Die_Implementation()
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetWorldTimerManager().SetTimer(RespawnTimer, this, &AEnemy::Respawn, RespawnTime);
+}
+
+void AEnemy::Respawn()
+{
+	GetWorldTimerManager().ClearTimer(RespawnTimer);
+	
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.Owner = this;
+
+		World->SpawnActor(GetClass(), &SpawnTransform, SpawnParams);
+	}
 }
 
 /**
