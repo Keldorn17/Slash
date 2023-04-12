@@ -42,9 +42,11 @@ protected:
 	void PlayHitSound(const FVector& ImpactPoint);
 	void SpawnHitParticles(const FVector& ImpactPoint);
 	void DisableCapsule();
+	void DisableMeshCollision();
+	void EnableCapsule();
+	void EnableMeshCollision();
 	bool IsAlive();
 	virtual bool CanAttack();
-	void DisableMeshCollision();
 	bool HasDeadTag();
 
 	UFUNCTION(BlueprintCallable)

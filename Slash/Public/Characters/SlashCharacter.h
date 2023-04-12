@@ -166,6 +166,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void HitReactEnd();
 
+	/** Respawn */
+	void Respawn();
+	FTransform SpawnTransform;
+	FTimerHandle RespawnTimer;
+
+	UPROPERTY(EditAnywhere, Category = Respawn)
+	float RespawnTime = 5.f;
+
 private:
 	/** Helper Functions */
 	bool IsUnoccupied();

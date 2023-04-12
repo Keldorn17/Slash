@@ -236,6 +236,16 @@ void ABaseCharacter::DisableMeshCollision()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void ABaseCharacter::EnableCapsule()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
+void ABaseCharacter::EnableMeshCollision()
+{
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
 void ABaseCharacter::DodgeEnd()
 {
 

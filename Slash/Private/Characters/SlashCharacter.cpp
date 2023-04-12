@@ -71,6 +71,8 @@ void ASlashCharacter::BeginPlay()
 
 	Tags.Add(FName("EngageableTarget"));
 	ShowStartMenu();
+
+	SpawnTransform = GetActorTransform();
 }
 
 // Tick
@@ -330,6 +332,7 @@ void ASlashCharacter::Die_Implementation()
 	Super::Die_Implementation();
 
 	ActionState = EActionState::EAS_Dead;
+	GetWorldTimerManager().SetTimer(RespawnTimer, this, &ASlashCharacter::Respawn, RespawnTime);
 }
 
 /**
@@ -533,4 +536,21 @@ bool ASlashCharacter::IsUnoccupied()
 bool ASlashCharacter::HasEnoughStamina()
 {
 	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCose();
+}
+
+void ASlashCharacter::Respawn()
+{
+	Tags.Remove(FName("Dead"));
+	ActionState = EActionState::EAS_Unoccupied;
+
+	EnableCapsule();
+	EnableMeshCollision();	
+	SetActorTransform(SpawnTransform);
+	GetWorldTimerManager().ClearTimer(RespawnTimer);
+	
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->SetHealth(Attributes->GetMaxHealth());
+		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+	}
 }
