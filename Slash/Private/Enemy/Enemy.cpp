@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AttributeComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
@@ -187,7 +188,7 @@ void AEnemy::SpawnSoul()
 }
 
 /**
-* Montage Player
+* Die
 */
 
 void AEnemy::Die_Implementation()
@@ -197,6 +198,7 @@ void AEnemy::Die_Implementation()
 	EnemyState = EEnemyState::EES_Dead;
 	ClearAttackTimer();
 	HideHealthBar();
+	SavePatrolTarget();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -206,7 +208,7 @@ void AEnemy::Die_Implementation()
 void AEnemy::Respawn()
 {
 	GetWorldTimerManager().ClearTimer(RespawnTimer);
-	
+
 	UWorld* World = GetWorld();
 	if (World)
 	{
@@ -214,7 +216,27 @@ void AEnemy::Respawn()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.Owner = this;
 
-		World->SpawnActor(GetClass(), &SpawnTransform, SpawnParams);
+		AEnemy* Enemy = World->SpawnActor<AEnemy>(GetClass(), SpawnTransform, SpawnParams);
+		Enemy->SetPatrolTargets(PatrolTargetSaved, PatrolTargetsSaved);
+	}
+	
+}
+
+void AEnemy::SavePatrolTarget()
+{
+	PatrolTargetSaved = PatrolTarget;
+	for (const auto& Element : PatrolTargets)
+	{
+		PatrolTargetsSaved.Add(Element);
+	}
+}
+
+void AEnemy::SetPatrolTargets(AActor* SavedPatrolTarget, TArray<AActor*> SavedPatrolTargets)
+{
+	PatrolTarget = SavedPatrolTarget;
+	for (const auto& Element : SavedPatrolTargets)
+	{
+		PatrolTargets.Add(Element);
 	}
 }
 

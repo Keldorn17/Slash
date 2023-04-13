@@ -46,11 +46,17 @@ protected:
 
 	/** Respawn */
 	void Respawn();
+	void SavePatrolTarget();
+	void SetPatrolTargets(AActor* SavedPatrolTarget, TArray<AActor*> SavedPatrolTargets);
 	FTransform SpawnTransform;
 	FTimerHandle RespawnTimer;
-
+	
 	UPROPERTY(EditAnywhere, Category = Respawn)
 	float RespawnTime = 180.f;
+
+	TObjectPtr<AActor> PatrolTargetSaved;
+	TArray<AActor*> PatrolTargetsSaved;
+
 private:
 	/** AI Behavior */
 	void SpawnDefaultWeapon();

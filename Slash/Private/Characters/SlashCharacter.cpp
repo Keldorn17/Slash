@@ -552,5 +552,4 @@ void ASlashCharacter::Respawn()
 		Attributes->SetHealth(Attributes->GetMaxHealth());
 		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
 	}
-	}
 }
