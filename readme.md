@@ -1,6 +1,6 @@
 # Slash
 
-Slash is an open world game witch is playing in a world where you can do anything you want. You can fight with enemies, collect treasures and new weapons, explore the world and much more. The game is still in development and will be under development for a long time. The game is made with Unreal Engine 5.1 and written in C++. 
+Slash is an open world game which is playing in a world where you can do anything you want. You can fight with enemies, collect treasures and new weapons, explore the world and much more. The game is still in development and will be under development for a long time. The game is made with Unreal Engine 5.1 and written in C++. 
 
 # How to play
 
