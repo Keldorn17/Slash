@@ -61,10 +61,12 @@ public:
 	void AddSouls(int32 NumberOfSouls);
 	void AddGold(int32 AmountOfGold);
 	void SetHealth(float NewHealth);
+	void SetStamina(float NewStamina);
 	FORCEINLINE int32 GetGold() const { return Gold; }
 	FORCEINLINE int32 GetSouls() const { return Souls; }
 	FORCEINLINE float GetDodgeCose() const { return DodgeCost; }
 	FORCEINLINE float GetStamina() const { return Stamina; }
+	FORCEINLINE float GetMaxStamina() const { return MaxStamina; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 	
 };

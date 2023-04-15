@@ -51,6 +51,11 @@ float UAttributeComponent::GetStaminaPercent()
 	return Stamina / MaxStamina;
 }
 
+void UAttributeComponent::SetStamina(float NewStamina)
+{
+	Stamina = NewStamina;
+}
+
 void UAttributeComponent::RegenStamina(float DeltaTime)
 {
 	Stamina = FMath::Clamp(Stamina + StaminaRegenRate * DeltaTime, 0.f, MaxStamina);

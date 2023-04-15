@@ -5,7 +5,6 @@
 #include "AIController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AttributeComponent.h"
-#include "Components/PrimitiveComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
@@ -212,11 +211,7 @@ void AEnemy::Respawn()
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.Owner = this;
-
-		AEnemy* Enemy = World->SpawnActor<AEnemy>(GetClass(), SpawnTransform, SpawnParams);
+		AEnemy* Enemy = World->SpawnActor<AEnemy>(GetClass(), SpawnTransform);
 		Enemy->SetPatrolTargets(PatrolTargetSaved, PatrolTargetsSaved);
 	}
 	
