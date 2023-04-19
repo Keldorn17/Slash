@@ -4,7 +4,7 @@ Slash is an open world game which is playing in a world where you can do anythin
 
 # How to play
 
-- Download the game
+- Download the game from this link https://drive.google.com/drive/folders/1pYfjgULxeaXSscuXuICQPjoUbr2Wh7Rv?usp=sharing
 - Extract the zip file
 - Run the .exe file
 - Enjoy the game
